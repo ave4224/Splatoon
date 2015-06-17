@@ -15,6 +15,7 @@
  */
 package net.happitopia.mcpaintball;
 
+import averycowan.bukkit.util.Tools;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -50,13 +51,13 @@ public class PaintRifle implements Listener {
     }
 
     public static ItemStack getWeapon() {
-        return new ItemStack(Material.BLAZE_ROD);
+        return new ItemStack(Material.DIAMOND_PICKAXE);
     }
 
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
         ItemStack drop = event.getPlayer().getItemInHand();
-        if ((event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && drop.getType().equals(getWeapon().getType())) {
+        if ((event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && Tools.getDurability(drop) > 0 && drop.getType().equals(getWeapon().getType())) {
             event.setCancelled(true);
             event.setUseInteractedBlock(Result.DENY);
             event.setUseItemInHand(Result.DENY);
@@ -67,6 +68,11 @@ public class PaintRifle implements Listener {
             bullet.setMetadata("weaponID", new FixedMetadataValue(plugin, ID));
             //bullet.setBounce(true);
             bullet.setYield(0);
+            event.getPlayer().chat(((Integer)Tools.getDurability(drop)).toString());
+            event.getPlayer().chat(((Boolean)Tools.hasDurability(drop)).toString());
+            Tools.changeDurability(drop, -2);
+            event.getPlayer().chat(((Integer)Tools.getDurability(drop)).toString());
+            event.getPlayer().chat(((Boolean)Tools.hasDurability(drop)).toString());
         }
     }
 
@@ -93,5 +99,4 @@ public class PaintRifle implements Listener {
 
         Paintball.paintBlock(hitBlock, DyeColor.getByData(meta.asByte()));
     }
-
 }
