@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.happitopia.mcpaintball;
 
 import org.bukkit.DyeColor;
@@ -39,21 +38,21 @@ import org.bukkit.util.BlockIterator;
  *
  * @author Avery Cowan
  */
-public class PaintRifle implements Listener{
-    
+public class PaintRifle implements Listener {
+
     public static final String ID = "sniper";
-    
+
     private Plugin plugin;
-    
+
     PaintRifle(Plugin p) {
         super();
         plugin = p;
     }
-    
+
     public static ItemStack getWeapon() {
         return new ItemStack(Material.BLAZE_ROD);
     }
-    
+
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
         ItemStack drop = event.getPlayer().getItemInHand();
@@ -70,24 +69,29 @@ public class PaintRifle implements Listener{
             bullet.setYield(0);
         }
     }
-    
-    @EventHandler@SuppressWarnings("empty-statement")
- void ProjectileHit(ProjectileHitEvent event) {
-        if(!Paintball.getMeta(event.getEntity().getMetadata("weaponID")).asString().equals(ID))
+
+    @EventHandler
+    @SuppressWarnings("empty-statement")
+    public void projectileHit(ProjectileHitEvent event) {
+        if (!Paintball.getMeta(event.getEntity().getMetadata("weaponID")).asString().equals(ID)) {
             return;
-        Projectile p = (Projectile)(event.getEntity());
-        MetadataValue meta = Paintball.getMeta(((Entity)p.getShooter()).getMetadata(Paintball.TEAM_TAG));
-        
-        if(!(p.getShooter() instanceof Player)) //Making sure the shooter is a player
+        }
+        Projectile p = (Projectile) (event.getEntity());
+        MetadataValue meta = Paintball.getMeta(((Entity) p.getShooter()).getMetadata(Paintball.TEAM_TAG));
+
+        if (!(p.getShooter() instanceof Player)) //Making sure the shooter is a player
+        {
             return;
-        
+        }
+
         BlockIterator iterator = new BlockIterator(p.getWorld(), p.getLocation().toVector(), p.getVelocity().normalize(), 0, 256);
         Block hitBlock = null;
-        while(iterator.hasNext() && ((hitBlock=iterator.next()).isEmpty() || hitBlock.isLiquid()));
-        if(hitBlock.isEmpty() || hitBlock.isLiquid())
+        while (iterator.hasNext() && ((hitBlock = iterator.next()).isEmpty() || hitBlock.isLiquid()));
+        if (hitBlock.isEmpty() || hitBlock.isLiquid()) {
             return;
-        
+        }
+
         Paintball.paintBlock(hitBlock, DyeColor.getByData(meta.asByte()));
     }
-    
+
 }

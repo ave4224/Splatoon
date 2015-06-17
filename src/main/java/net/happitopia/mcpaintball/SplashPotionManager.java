@@ -16,7 +16,15 @@
 
 package net.happitopia.mcpaintball;
 
+import org.bukkit.DyeColor;
+import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.ThrownPotion;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -24,4 +32,21 @@ import org.bukkit.event.Listener;
  */
 public class SplashPotionManager implements Listener{
     
+    private Plugin plugin;
+
+    SplashPotionManager(Plugin p) {
+        super();
+        plugin = p;
+    }
+    
+    @EventHandler
+    public void projectileHit(ProjectileHitEvent event){
+        if(event.getEntityType()==EntityType.SPLASH_POTION && event.getEntity().getShooter() instanceof Player){
+            ThrownPotion s = (ThrownPotion) event.getEntity();
+            Block b = s.getWorld().getBlockAt(s.getLocation());
+            DyeColor team = DyeColor.getByData(Paintball.getMeta(((Player)s.getShooter()).getMetadata(Paintball.TEAM_TAG)).asByte());
+            for(int i = 0; i < 27; i++)
+                Paintball.paintBlock(b.getRelative(i/9-1, (i/3)%3-1, i%3-1), team);
+        }
+    }
 }

@@ -49,8 +49,7 @@ public class Paintball extends JavaPlugin {
 
     private static Paintball instance = null;
     
-    public static final Material PAINT = Material.STAINED_CLAY;
-    public static final DyeColor[] COLOR = {DyeColor.RED, DyeColor.BLUE};
+    public static final Material PAINT = Material.WOOL;
     
     public static final String TEAM_TAG = "team";
 
@@ -84,14 +83,11 @@ public class Paintball extends JavaPlugin {
         if (config.getBoolean("Paint Dripper.active")) {
             getServer().getPluginManager().registerEvents(new PaintDripper(this), this);
         }
-    }
-    
-    public static void paintBlock(Block b, int team){
-        paintBlock(b, COLOR[team]);
+        getServer().getPluginManager().registerEvents(new SplashPotionManager(this), this);
     }
     
     public static void paintBlock(Block b, DyeColor team) {
-        if(b.getType().equals(Material.BEDROCK))
+        if(!b.getType().equals(PAINT))
             return;
         b.setType(PAINT);
         b.setData(team.getData());
@@ -108,17 +104,17 @@ public class Paintball extends JavaPlugin {
 
     
     
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("setteam") && getConfig().getBoolean("Debug-Mode")) {
-            if (sender instanceof Player) {
-                if (sender.isOp()) {
-                    if(args.length==1){
-                        ((Player)sender).setMetadata(TEAM_TAG, new FixedMetadataValue(this, args[0]));
-                    }
-                }
-            }
-
-        }
-        return false;
-    }
+//    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+//        if (cmd.getName().equalsIgnoreCase("setteam") && getConfig().getBoolean("Debug-Mode")) {
+//            if (sender instanceof Player) {
+//                if (sender.isOp()) {
+//                    if(args.length==1){
+//                        ((Player)sender).setMetadata(TEAM_TAG, new FixedMetadataValue(this, args[0]));
+//                    }
+//                }
+//            }
+//
+//        }
+//        return false;
+//    }
 }
